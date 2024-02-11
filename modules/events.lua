@@ -1,7 +1,9 @@
 ---------------------------------------------------------------------------------------------
 -- EVENTS
 ---------------------------------------------------------------------------------------------
+local RitnEvoGui = require(ritnlib.defines.enemy.class.evoGui)
 local RitnSurface = require(ritnlib.defines.enemy.class.surface)
+local RitnForce = require(ritnlib.defines.enemy.class.force)
 ---------------------------------------------------------------------------------------------
 
 local function on_init_mod(event)
@@ -18,56 +20,68 @@ local function on_init_mod(event)
     })
     remote.call("RitnCoreGame", "add_param_data", "force", "cease_fire_disable_forced", false)
     -----------------------------------------------------------
+    -- gestion evoGUI
+    local status = pcall(function() remote.call("EvoGUI", "create_remote_sensor", 
+        { 
+          mod_name = "RitnEnemy",
+          name = "evolution_factor_ritnenemy", 
+          text = "", 
+          caption = {'sensor.evo_factor_name'}
+        }
+    ) end)
+    if status then 
+        log('evoGUI : remote sensor load !')
+    else 
+        log('evoGUI : remote sensor not load.')
+    end
+    -----------------------------------------------------------
     log('on_init : RitnEnemy -> finish !')
+end
+
+
+-- config du jeu à changé
+local function on_configuration_changed(event)
+    -----------------------------------------------------------
+    -- gestion evoGUI
+    pcall(function() remote.call("EvoGUI", "create_remote_sensor", 
+        { 
+          mod_name = "RitnEnemy",
+          name = "evolution_factor_ritnenemy", 
+          text = "", 
+          caption = {'sensor.evo_factor_name'}
+        }
+    ) end)
+    -----------------------------------------------------------
 end
 
 
 local function on_tick_evoGui(e)
     if game.tick % 60 ~= 0 then return end
-    if global.enemy.setting == false then return end
-    if global.enemy.value == false then return end
+
+    local enemy = remote.call("RitnCoreGame", "get_enemy")
+
+    if enemy == nil then return end
+    if enemy.active == nil then return end
+    if enemy.active == false then return end
   
     if game.active_mods["EvoGUI"] then 
-  
-      for i,LuaPlayer in pairs(game.players) do
-  
-        if LuaPlayer.valid then 
-            if LuaPlayer.gui.top["evogui_root"] ~= nil then
-              local LuaGui = LuaPlayer.gui.top["evogui_root"]["sensor_flow"]["always_visible"]["remote_sensor_evolution_factor_ritntp"]
-  
-              if LuaGui then
-                  local LuaSurface = LuaPlayer.surface 
-  
-                  if LuaSurface.name == "nauvis" or string.sub(LuaSurface.name, 1, 6) == "lobby~" then
-                    -- enemy (nauvis)
-                    local LuaForceEnemy = game.forces["enemy"]
-                    local percent_evo_factor = LuaForceEnemy.evolution_factor * 100
-                    local whole_number = math.floor(percent_evo_factor)
-                    local fractional_component = math.floor((percent_evo_factor - whole_number) * 100)
-  
-                    LuaGui.caption = {"sensor.evo_factor_format", LuaForceEnemy.name, string.format("%d.%02d%%", whole_number, fractional_component)}
-                  else
-                    -- enemy surface (ritnTP)
-                    local LuaForceEnemy = game.forces["enemy~" .. LuaSurface.name]
-                    local percent_evo_factor = LuaForceEnemy.evolution_factor * 100
-                    local whole_number = math.floor(percent_evo_factor)
-                    local fractional_component = math.floor((percent_evo_factor - whole_number) * 100)
-  
-                    LuaGui.caption = {"sensor.evo_factor_format", LuaForceEnemy.name, string.format("%d.%02d%%", whole_number, fractional_component)}
-                  end
-              else
-                  local text = ""
-              end
-            else
-              events.utils.pcallLog("no 'evogui_root'", "on_tick_evoGui")
-            end
-        else
-          events.utils.pcallLog("no 'top'", "on_tick_evoGui")
+
+        local players = remote.call("RitnCoreGame", "get_players")
+
+        for player_index, player in pairs(players) do 
+            -- On créer un faux event pour charger le LuaPlayer
+            local event = {player_index = player_index}
+            -- On récupère l'EvoGUI du joueur
+            local rEvoGui = RitnEvoGui(event)
+            local not_log = true
+            rEvoGui:setCaption(RitnForce(game.forces[player.force], not_log):evolutionCalculate())
         end
-      end
-      
     end
-  end
+end
+
+
+
+
 
 
 local function on_tick_evolution(e)
@@ -118,8 +132,22 @@ local function on_tick_evolution(e)
         end
 end
 
+
+
+-- event : on_tick
+local function on_tick(e)
+    --on_tick_local(e)
+    --on_tick_loadGame(e) 
+    on_tick_evoGui(e)
+    --on_tick_evolution(e)
+end
+
 ---------------------------------------------------------------------------------------------
--- event : on_init
+local module = {events = {}}
+---------------------------------------------------------------------------------------------
+-- Events
 script.on_init(on_init_mod)
+script.on_configuration_changed(on_configuration_changed)
+module.events[defines.events.on_tick] = on_tick
 ---------------------------------------------------------------------------------------------
-return {}
+return module

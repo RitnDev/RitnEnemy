@@ -16,6 +16,7 @@ defines.directory = dir
 
 -- classes
 defines.class = {
+    evoGui = directory .. "classes.RitnEvoGui",
     surface = directory .. "classes.RitnSurface",
     force = directory .. "classes.RitnForce",
 }

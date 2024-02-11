@@ -8,23 +8,36 @@ local RitnCoreForce = require(ritnlib.defines.core.class.force)
 ----------------------------------------------------------------
 --- CLASSE DEFINES
 ----------------------------------------------------------------
-local RitnForce = class.newclass(RitnCoreForce, function(base, LuaForce)
+local RitnForce = class.newclass(RitnCoreForce, function(base, LuaForce, not_log)
     if LuaForce == nil then return end
     if LuaForce.valid == false then return end
     if LuaForce.object_name ~= "LuaForce" then return end
     RitnCoreForce.init(base, LuaForce)
-    log('> '..base.object_name..':init() -> RitnEnemy')
+    if not not_log then
+        log('> '..base.object_name..':init() -> RitnEnemy')
+    end
     --------------------------------------------------
     base.compute_enemy_name = ritnlib.defines.core.names.prefix.enemy .. base.name
-    log('> base.compute_enemy_name = ' .. base.compute_enemy_name)
+    if not not_log then
+        log('> base.compute_enemy_name = ' .. base.compute_enemy_name)
+    end
     base.FORCE_ENEMY_NAME = "enemy"
     base.FORCE_PLAYER_NAME = "player"
     --------------------------------------------------
-    local force_used = base.data[base.name].force_used
-    log('> [RitnEnemy] > RitnForce.force_used: ' .. tostring(force_used))
-    log('> [RitnEnemy] > RitnForce')
+    if not not_log then
+        local force_used = base.data[base.name].force_used
+        log('> [RitnEnemy] > RitnForce.force_used: ' .. tostring(force_used))
+        log('> [RitnEnemy] > RitnForce')
+    end
+    base.not_log = not_log
 end)
 ----------------------------------------------------------------
+
+
+-- retourne true si la RitnForce est la force "player"
+function RitnForce:isForcePlayer()
+    return (self.name == self.FORCE_PLAYER_NAME)
+end
 
 
 -- Système de cessé le feu avec les ennemies lors d'un changement d'état d'un joueur.
@@ -76,7 +89,27 @@ function RitnForce:setCeaseFire(value_cease_fire)
 end
 
 
+-- renvoie l'evolution au format texte à afficher dans EvoGUI
+function RitnForce:evolutionCalculate()
+    -- recupère la force enemy par defaut
+    local LuaForceEnemy = game.forces[self.FORCE_ENEMY_NAME]
+    -- si la force du joueur n'est pas player
+    if self:isForcePlayer() == false then
+        if game.forces[self.compute_enemy_name] ~= nil then 
+            -- on récupère la force enemy associé à sa force actuelle
+            LuaForceEnemy = game.forces[self.compute_enemy_name]
+        end
+    end
+    -- prepare le texte de sortie en fonction de l'evolution de la force enemy
+    local percent_evo_factor = LuaForceEnemy.evolution_factor * 100
+    local whole_number = math.floor(percent_evo_factor)
+    local fractional_component = math.floor((percent_evo_factor - whole_number) * 100)
+    if not self.not_log then 
+        log('> ' .. LuaForceEnemy.name .. ' (evo) = ' .. string.format("%d.%02d%%", whole_number, fractional_component))
+    end
 
+    return {"sensor.evo_factor_format", LuaForceEnemy.name, string.format("%d.%02d%%", whole_number, fractional_component)}
+end
 
 
 ----------------------------------------------------------------

@@ -3,7 +3,7 @@
 ---------------------------------------------------------------------------------------------
 if global.enemy == nil then
     global.enemy = {
-        map_setting_enemy_activated = false,
+        
     }
 end
 
