@@ -38,11 +38,14 @@ function RitnSurface:createForceEnemy()
     if self.enemy.active == false then return self end
     log('> '..self.object_name..':createForceEnemy() -> '..self.name)
 
-    if not game.forces[self.compute_enemy_name] then
+    -- la force enemy est à créer car elle n'existe pas
+    if game.forces[self.compute_enemy_name] == nil then
+        log('> Create force enemy : ' .. self.compute_enemy_name)
         local LuaForce = game.create_force(self.compute_enemy_name)
         LuaForce.reset()
         LuaForce.reset_evolution()
         LuaForce.ai_controllable = true
+        --LuaForce.set_cease_fire(self.name, false) ????????????
         LuaForce.set_cease_fire(self.FORCE_ENEMY_NAME, true)
         game.forces[self.FORCE_ENEMY_NAME].set_cease_fire(LuaForce, true)
     end

@@ -19,6 +19,7 @@ local function on_player_changed_surface(e)
     local rPlayer = RitnEvent(e):getPlayer()
     -- Récupération de la surface où le joueur viens d'arriver
     local rSurface = RitnSurface(rPlayer.surface):createForceEnemy()
+    RitnForce(rPlayer.force):updateCeaseFires()
     ----------------------------------------------------------------
     log('on_player_changed_surface')
 end
