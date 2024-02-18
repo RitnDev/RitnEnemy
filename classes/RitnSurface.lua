@@ -45,7 +45,6 @@ function RitnSurface:createForceEnemy()
         LuaForce.reset()
         LuaForce.reset_evolution()
         LuaForce.ai_controllable = true
-        --LuaForce.set_cease_fire(self.name, false) ????????????
         LuaForce.set_cease_fire(self.FORCE_ENEMY_NAME, true)
         game.forces[self.FORCE_ENEMY_NAME].set_cease_fire(LuaForce, true)
     end
@@ -69,12 +68,9 @@ function RitnSurface:changeForceEnemy(area)
 end 
 
 
-
+-- récupére le facteur d'evolution à afficher pour evoGUI
 function RitnSurface:get_evo_factor(format)
-    
-    local enemy = prefix_enemy .. LuaSurface.name
     local percent_evo_factor = 0
-
     if game.forces[self.compute_enemy_name] ~= nil then
         percent_evo_factor = game.forces[self.compute_enemy_name].evolution_factor * 100
     else
@@ -87,8 +83,8 @@ function RitnSurface:get_evo_factor(format)
 end
 
 
---
-function RitnSurface:pollution_by_surface()
+-- Calcul de la pollution de la surface
+function RitnSurface:calculate_pollution()
     if self.data[self.name] then 
         if self.data[self.name].pollution then                     
             local count = self.data[self.name].pollution.count
@@ -99,6 +95,7 @@ function RitnSurface:pollution_by_surface()
             if ecart > 0 then 
                 self.data[self.name].pollution.count = count + ecart
             end
+            --log('pollution_by_surface -> ' .. self.name)
         end
     end
 
@@ -108,15 +105,37 @@ function RitnSurface:pollution_by_surface()
 end
 
 
-function RitnSurface:evolution_by_surface()
+-- calcul du temps passé sur la surface
+function RitnSurface:calculate_time()
+    -- si la surface est utilisé par au moins un joueur
+    if self.data[self.name].map_used then 
+        self.data[self.name].time.current = math.floor(game.tick / 60)
+    end
+
+    if self.data[self.name].time.current > self.data[self.name].time.last then 
+        self.data[self.name].time.count = self.data[self.name].time.count + 1
+        self.data[self.name].time.last = self.data[self.name].time.current
+    end
+
+    self:update()
+
+    return self 
+end
+
+
+-- calcul de l'evolution des enemy de cette surface
+function RitnSurface:calculate_evolution()
     if self.data[self.name] then  
-        if self.data[self.name].pollution then                     
+        if self.data[self.name].pollution then                 
             local count = self.data[self.name].pollution.count
             -- recuperation du temps
-            local time = self.data[self.name].time
-            local time_factor = global.map_settings.enemy_evolution.time_factor
+            local time = self.data[self.name].time.count
+            
+            -- récupération des facteur d'evolution
+            local map_settings = remote.call("RitnCoreGame", "get_map_settings")
+            local time_factor = map_settings.enemy_evolution.time_factor
+            local pollution_factor = map_settings.enemy_evolution.pollution_factor
 
-            local pollution_factor = global.map_settings.enemy_evolution.pollution_factor
             local enemy_name = self.FORCE_ENEMY_NAME
             if self.name ~= self.SURFACE_NAUVIS_NAME then 
                 enemy_name = self.compute_enemy_name

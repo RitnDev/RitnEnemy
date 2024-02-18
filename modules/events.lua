@@ -18,6 +18,11 @@ local function on_init_mod(event)
         current = 0,
         count = 0,
     })
+    remote.call("RitnCoreGame", "add_param_data", "surface", "time", {
+        last = 0,
+        current = 0,
+        count = 0,
+    })
     remote.call("RitnCoreGame", "add_param_data", "force", "cease_fire_disable_forced", false)
     -----------------------------------------------------------
     -- gestion evoGUI
@@ -54,7 +59,7 @@ local function on_configuration_changed(event)
     -----------------------------------------------------------
 end
 
-
+-- Gestion de l'affichage dans EvoGUI
 local function on_tick_evoGui(e)
     if game.tick % 60 ~= 0 then return end
 
@@ -85,51 +90,54 @@ end
 
 
 local function on_tick_evolution(e)
+    -- récupère le modulo 60 en fonction de la valeur du tick en cours
     local value = e.tick % 60
+    -- si le modulo = 0 on ne fais rien
+    if value == 0 then return end
+
+    -- on récupère le nombre de surfaces en cours
+    local values_surfaces = remote.call("RitnCoreGame", "get_values", "surfaces")
+    -- si value est supérieur au nombre de surfaces on arrete tout !
+    if value > values_surfaces then return end
+    -- On recupere la liste des surfaces
+    local surfaces = remote.call("RitnCoreGame", "get_surfaces")
+    local iterator = 0
+    -- par defaut le surface_name = nauvis
+    local surface_name = "nauvis"
+    -- on boucle en incrementant l'iterator
+    for _, surface in pairs(surfaces) do
+        iterator = iterator + 1
+        -- si l'iterator = valeur on est sur la surface à calculer
+        if iterator == value then 
+            -- on récupère le nom la surface
+            surface_name = surface.name
+        end
+    end
+    --log('> surface_name = ' .. surface_name)
   
     local map_settings = remote.call("RitnCoreGame", "get_map_settings")
     local enemy = remote.call("RitnCoreGame", "get_enemy")
 
-    if map_settings.pollution then 
-        if map_settings.pollution.enabled then 
-            if map_settings.enemy_evolution then 
-                if map_settings.enemy_evolution.enabled then 
-                    if enemy.active then 
-                        local LuaSurface = game.surfaces[value]
-                        if LuaSurface ~= nil then
-                            local surfaces = remote.call("RitnCoreGame", "get_surfaces")
-                            if surfaces[LuaSurface.name] then 
-                                local rSurface = RitnSurface(LuaSurface)
-                                rSurface:pollution_by_surface()
-                            end
-                        end
-                    end
+    -- calcul de la pollution pour une surface
+    if map_settings.enemy_evolution then 
+        if map_settings.enemy_evolution.enabled then 
+            if enemy.active then 
+                local LuaSurface = game.surfaces[surface_name]
+                if LuaSurface ~= nil then
+                    local rSurface = RitnSurface(LuaSurface)
+
+                    -- calcul de la pollution de la surface
+                    rSurface:calculate_pollution()
+
+                    -- calcul du temps passé sur la surface
+                    rSurface:calculate_time()
+
+                    -- calcul de l'evolution des enemy de cette surface
+                    rSurface:calculate_evolution()
                 end
             end
         end
     end
-
-----------------------------------------------------------------------------------
-        if global.teleport.surfaces[LuaSurface.name] then
-            events.enemy.pollution_by_surface(LuaSurface)
-            if not global.teleport.surfaces[LuaSurface.name].current_time then 
-                global.teleport.surfaces[LuaSurface.name].last_time = 0
-                global.teleport.surfaces[LuaSurface.name].current_time = 0
-                global.teleport.surfaces[LuaSurface.name].time = 0
-            end
-            -- si la map est utilisé par quelqu'un
-            if global.teleport.surfaces[LuaSurface.name].map_used then 
-                -- on recupère le curent time de la partie
-                global.teleport.surfaces[LuaSurface.name].current_time = math.floor(game.tick / 60)
-            end
-
-            -- si le current time est surperieur au last time c'est que le temps s'ecoule (map_used = true)
-            if global.teleport.surfaces[LuaSurface.name].current_time > global.teleport.surfaces[LuaSurface.name].last_time then
-                global.teleport.surfaces[LuaSurface.name].time = global.teleport.surfaces[LuaSurface.name].time + 1
-                global.teleport.surfaces[LuaSurface.name].last_time = global.teleport.surfaces[LuaSurface.name].current_time
-            end
-            events.enemy.evolution_by_surface(LuaSurface)
-        end
 end
 
 
@@ -137,9 +145,8 @@ end
 -- event : on_tick
 local function on_tick(e)
     --on_tick_local(e)
-    --on_tick_loadGame(e) 
     on_tick_evoGui(e)
-    --on_tick_evolution(e)
+    on_tick_evolution(e)
 end
 
 ---------------------------------------------------------------------------------------------

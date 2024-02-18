@@ -1,12 +1,7 @@
 -- RitnEvoGui
 ----------------------------------------------------------------
 local class = require(ritnlib.defines.class.core)
-local modGui = require("mod-gui")
---local libStyle = require(ritnlib.defines.class.gui.style)
 local libGui = require(ritnlib.defines.class.luaClass.gui)
-----------------------------------------------------------------
---local RitnPlayer = require(ritnlib.defines.core.class.player)
---local RitnSurface = require(ritnlib.defines.lobby.class.surface)
 ----------------------------------------------------------------
 
 
