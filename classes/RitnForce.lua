@@ -71,11 +71,6 @@ function RitnForce:setCeaseFire(value_cease_fire)
         log('> ['..self.FORCE_ENEMY_NAME..'].set_cease_fire('..self.name..', '.. tostring(value_cease_fire) ..')')
 
         game.forces[self.FORCE_ENEMY_NAME].set_cease_fire(self.name, value_cease_fire)
-        
-        log('liste des forces : ')
-        for _,force in pairs(game.forces) do 
-            log(force.name)
-        end
 
         if game.forces[self.compute_enemy_name] ~= nil then 
             -- si ce n'est pas le cas on change pour la force "enemy" ET la force enemy associé à la force listé
