@@ -21,8 +21,6 @@ local RitnForce = class.newclass(RitnCoreForce, function(base, LuaForce, not_log
     if not not_log then
         log('> base.compute_enemy_name = ' .. base.compute_enemy_name)
     end
-    base.FORCE_ENEMY_NAME = "enemy"
-    base.FORCE_PLAYER_NAME = "player"
     --------------------------------------------------
     if not not_log then
         local force_used = base.data[base.name].force_used
