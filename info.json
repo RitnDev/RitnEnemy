@@ -1,12 +1,12 @@
 {
   "name": "RitnEnemy",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "title": "RitnEnemy",
   "author": "Ritn",
   "description": "Mod d'extension du mod RitnBaseGame ajoutant la gestion des ennemies sur les surfaces créées.\nMod extension of the RitnBaseGame mod adding enemy management on the created surfaces.",
   "factorio_version": "1.1",
   "dependencies":[
     "base >= 1.1",
-    "RitnBaseGame >= 0.3"
+    "RitnBaseGame >= 0.5"
   ]
 }

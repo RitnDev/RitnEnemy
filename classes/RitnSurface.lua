@@ -1,38 +1,29 @@
--- RitnSurface
-----------------------------------------------------------------
-local class = require(ritnlib.defines.class.core)
-local RitnCoreSurface = require(ritnlib.defines.core.class.surface)
-----------------------------------------------------------------
-
-
+-- RitnEnemySurface
 ----------------------------------------------------------------
 --- CLASSE DEFINES
 ----------------------------------------------------------------
-local RitnSurface = class.newclass(RitnCoreSurface, function(base, LuaSurface)
-    if LuaSurface == nil then return end
-    if LuaSurface.valid == false then return end
-    if LuaSurface.object_name ~= "LuaSurface" then return end
-    RitnCoreSurface.init(base, LuaSurface)
-    --log('> '..base.object_name..':init() -> RitnEnemy')
+RitnEnemySurface = ritnlib.classFactory.newclass(RitnCoreSurface, function(self, LuaSurface)
+    RitnCoreSurface.init(self, LuaSurface)
+    --log('> '..self.object_name..':init() -> RitnEnemy')
     --------------------------------------------------
-    base.enemy = remote.call("RitnCoreGame", "get_enemy")
+    self.enemy = remote.call("RitnCoreGame", "get_enemy")
     --------------------------------------------------
-    base.prefix = ritnlib.defines.core.names.prefix
+    self.prefix = ritnlib.defines.core.names.prefix
     --------------------------------------------------
-    base.compute_enemy_name = base.prefix.enemy .. base.name
-    base.compute_lobby_name = base.prefix.lobby .. base.name
+    self.compute_enemy_name = self.prefix.enemy .. self.name
+    self.compute_lobby_name = self.prefix.lobby .. self.name
     --------------------------------------------------
-    base.SURFACE_NAUVIS_NAME = "nauvis"
-    base.FORCE_ENEMY_NAME = "enemy"
-    base.FORCE_PLAYER_NAME = "player"
+    self.SURFACE_NAUVIS_NAME = "nauvis"
+    self.FORCE_ENEMY_NAME = "enemy"
+    self.FORCE_PLAYER_NAME = "player"
     --------------------------------------------------
-    --log('> [RitnEnemy] > RitnSurface')
+    --log('> [RitnEnemy] > RitnEnemySurface')
 end)
 
 ----------------------------------------------------------------
 
 -- Créé une équipe enemy associé pour la surface : "enemy~"..SURFACE_NAME
-function RitnSurface:createForceEnemy()
+function RitnEnemySurface:createForceEnemy()
     if self.name == self.SURFACE_NAUVIS_NAME then return self end
     if string.sub(self.name, 1, 6) == self.prefix.lobby then return self end
     if self.enemy.active == false then return self end
@@ -54,7 +45,7 @@ end
 
 
 -- change la force "enemy" par "enemy~"..SURFACE_NAME
-function RitnSurface:changeForceEnemy(area)
+function RitnEnemySurface:changeForceEnemy(area)
     if self.name == self.SURFACE_NAUVIS_NAME then return self end
     if string.sub(self.name, 1, 6) == self.prefix.lobby then return self end
     if self.enemy.active == false then return self end
@@ -69,7 +60,7 @@ end
 
 
 -- récupére le facteur d'evolution à afficher pour evoGUI
-function RitnSurface:get_evo_factor(format)
+function RitnEnemySurface:get_evo_factor(format)
     local percent_evo_factor = 0
     if game.forces[self.compute_enemy_name] ~= nil then
         percent_evo_factor = game.forces[self.compute_enemy_name].evolution_factor * 100
@@ -84,7 +75,7 @@ end
 
 
 -- Calcul de la pollution de la surface
-function RitnSurface:calculate_pollution()
+function RitnEnemySurface:calculate_pollution()
     if self.data[self.name] then 
         if self.data[self.name].pollution then                     
             local count = self.data[self.name].pollution.count
@@ -106,7 +97,7 @@ end
 
 
 -- calcul du temps passé sur la surface
-function RitnSurface:calculate_time()
+function RitnEnemySurface:calculate_time()
     -- si la surface est utilisé par au moins un joueur
     if self.data[self.name].map_used then 
         self.data[self.name].time.current = math.floor(game.tick / 60)
@@ -124,7 +115,7 @@ end
 
 
 -- calcul de l'evolution des enemy de cette surface
-function RitnSurface:calculate_evolution()
+function RitnEnemySurface:calculate_evolution()
     if self.data[self.name] then  
         if self.data[self.name].pollution then                 
             local count = self.data[self.name].pollution.count
@@ -162,8 +153,3 @@ function RitnSurface:calculate_evolution()
 
   return self
 end
-
-
-
-----------------------------------------------------------------
-return RitnSurface

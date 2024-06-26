@@ -1,45 +1,36 @@
--- RitnForce
-----------------------------------------------------------------
-local class = require(ritnlib.defines.class.core)
-local RitnCoreForce = require(ritnlib.defines.core.class.force)
-----------------------------------------------------------------
-
-
+-- RitnEnemyForce
 ----------------------------------------------------------------
 --- CLASSE DEFINES
 ----------------------------------------------------------------
-local RitnForce = class.newclass(RitnCoreForce, function(base, LuaForce, not_log)
-    if LuaForce == nil then return end
-    if LuaForce.valid == false then return end
-    if LuaForce.object_name ~= "LuaForce" then return end
-    RitnCoreForce.init(base, LuaForce)
+RitnEnemyForce = ritnlib.classFactory.newclass(RitnCoreForce, function(self, LuaForce, not_log)
+    RitnCoreForce.init(self, LuaForce)
     if not not_log then
-        log('> '..base.object_name..':init() -> RitnEnemy')
+        log('> '..self.object_name..':init() -> RitnEnemy')
     end
     --------------------------------------------------
-    base.compute_enemy_name = ritnlib.defines.core.names.prefix.enemy .. base.name
+    self.compute_enemy_name = ritnlib.defines.core.names.prefix.enemy .. self.name
     if not not_log then
-        log('> base.compute_enemy_name = ' .. base.compute_enemy_name)
+        log('> self.compute_enemy_name = ' .. self.compute_enemy_name)
     end
     --------------------------------------------------
     if not not_log then
-        local force_used = base.data[base.name].force_used
-        log('> [RitnEnemy] > RitnForce.force_used: ' .. tostring(force_used))
-        log('> [RitnEnemy] > RitnForce')
+        local force_used = self.data[self.name].force_used
+        log('> [RitnEnemy] > RitnEnemyForce.force_used: ' .. tostring(force_used))
+        log('> [RitnEnemy] > RitnEnemyForce')
     end
-    base.not_log = not_log
+    self.not_log = not_log
 end)
 ----------------------------------------------------------------
 
 
--- retourne true si la RitnForce est la force "player"
-function RitnForce:isForcePlayer()
+-- retourne true si la RitnEnemyForce est la force "player"
+function RitnEnemyForce:isForcePlayer()
     return (self.name == self.FORCE_PLAYER_NAME)
 end
 
 
 -- Système de cessé le feu avec les ennemies lors d'un changement d'état d'un joueur.
-function RitnForce:updateCeaseFires()
+function RitnEnemyForce:updateCeaseFires()
 
     if self.data[self.name] then 
         log('> '..self.object_name..':updateCeaseFires() -> '..self.name)
@@ -61,7 +52,7 @@ end
 
 
 -- Changement de l'état du cessé le feu pour les forces listé (force enemy associé)
-function RitnForce:setCeaseFire(value_cease_fire)
+function RitnEnemyForce:setCeaseFire(value_cease_fire)
     log('> '..self.object_name..':setCeaseFire('.. tostring(value_cease_fire) ..') -> '..self.name)
     
     -- On vérifie que la force existe
@@ -83,7 +74,7 @@ end
 
 
 -- renvoie l'evolution au format texte à afficher dans EvoGUI
-function RitnForce:evolutionCalculate()
+function RitnEnemyForce:evolutionCalculate()
     -- recupère la force enemy par defaut
     local LuaForceEnemy = game.forces[self.FORCE_ENEMY_NAME]
     -- si la force du joueur n'est pas player
@@ -105,5 +96,3 @@ function RitnForce:evolutionCalculate()
 end
 
 
-----------------------------------------------------------------
-return RitnForce

@@ -1,25 +1,22 @@
 ---------------------------------------------------------------------------------------------
 -- MODULE : PLAYER
 ---------------------------------------------------------------------------------------------
-local RitnEvent = require(ritnlib.defines.core.class.event)
-local RitnSurface = require(ritnlib.defines.enemy.class.surface)
-local RitnForce = require(ritnlib.defines.enemy.class.force)
----------------------------------------------------------------------------------------------
+
 
 -- Remplace les entitées "spawner" de la force "enemy" par la force "enemy~[player_name]"
 local function on_chunk_generated(e)
-    local rEvent = RitnEvent(e)
-    local rSurface = RitnSurface(rEvent.surface):changeForceEnemy(rEvent.area)
+    local rEvent = RitnCoreEvent(e)
+    local rSurface = RitnEnemySurface(rEvent.surface):changeForceEnemy(rEvent.area)
 end
 
 --Creation de la force enemy de la map joueur
 local function on_player_changed_surface(e)
     ----------------------------------------------------------------
-    local rEvent = RitnEvent(e)
-    local rPlayer = RitnEvent(e):getPlayer()
+    local rEvent = RitnCoreEvent(e)
+    local rPlayer = RitnCoreEvent(e):getPlayer()
     -- Récupération de la surface où le joueur viens d'arriver
-    local rSurface = RitnSurface(rPlayer.surface):createForceEnemy()
-    RitnForce(rPlayer.force):updateCeaseFires()
+    local rSurface = RitnEnemySurface(rPlayer.surface):createForceEnemy()
+    RitnEnemyForce(rPlayer.force):updateCeaseFires()
     ----------------------------------------------------------------
     log('on_player_changed_surface')
 end
@@ -27,8 +24,8 @@ end
 
 local function update_cease_fire(e)
     ----------------------------------------------------------------
-    local rEvent = RitnEvent(e)
-    local rForce = RitnForce(rEvent.player.force):updateCeaseFires()
+    local rEvent = RitnCoreEvent(e)
+    local rForce = RitnEnemyForce(rEvent.player.force):updateCeaseFires()
     ----------------------------------------------------------------
     log(rEvent.name)
 end
@@ -36,9 +33,9 @@ end
 
 local function on_player_changed_force(e)
     ----------------------------------------------------------------
-    local rEvent = RitnEvent(e)
-    local rForce = RitnForce(rEvent.player.force):updateCeaseFires()
-    local rOldForce = RitnForce(rEvent.force):updateCeaseFires()
+    local rEvent = RitnCoreEvent(e)
+    local rForce = RitnEnemyForce(rEvent.player.force):updateCeaseFires()
+    local rOldForce = RitnEnemyForce(rEvent.force):updateCeaseFires()
     ----------------------------------------------------------------
     log('on_player_changed_force')
 end

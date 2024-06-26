@@ -21,6 +21,8 @@ defines.class = {
     force = directory .. "classes.RitnForce",
 }
 
+-- setup classes
+defines.setup = dir .. ".core.setup-classes"
 
 -- Modules
 defines.modules = {

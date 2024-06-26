@@ -1,21 +1,15 @@
 -- RitnEvoGui
 ----------------------------------------------------------------
-local class = require(ritnlib.defines.class.core)
-local libGui = require(ritnlib.defines.class.luaClass.gui)
-----------------------------------------------------------------
-
-
-----------------------------------------------------------------
 --- CLASSE DEFINES
 ----------------------------------------------------------------
-local RitnEvoGui = class.newclass(libGui, function(base, event)
-    libGui.init(base, event, ritnlib.defines.enemy.name, "evogui_root")
-    base.object_name = "RitnEvoGui"
+RitnEvoGui = ritnlib.classFactory.newclass(RitnLibGui, function(self, event)
+    RitnLibGui.init(self, event, ritnlib.defines.enemy.name, "evogui_root")
+    self.object_name = "RitnEvoGui"
     --------------------------------------------------
-    base.gui_name = "evo"
-    base.gui_evo = nil
+    self.gui_name = "evo"
+    self.gui_evo = nil
     --------------------------------------------------
-    base.gui = { base.player.gui.top }
+    self.gui = { self.player.gui.top }
     --------------------------------------------------
 end)
 ----------------------------------------------------------------
@@ -69,4 +63,4 @@ end
 
 
 ----------------------------------------------------------------
-return RitnEvoGui
+--return RitnEvoGui

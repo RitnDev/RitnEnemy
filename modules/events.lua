@@ -1,10 +1,7 @@
 ---------------------------------------------------------------------------------------------
 -- EVENTS
 ---------------------------------------------------------------------------------------------
-local RitnEvoGui = require(ritnlib.defines.enemy.class.evoGui)
-local RitnSurface = require(ritnlib.defines.enemy.class.surface)
-local RitnForce = require(ritnlib.defines.enemy.class.force)
----------------------------------------------------------------------------------------------
+
 
 local function on_init_mod(event)
     log('RitnEnemy -> on_init')
@@ -79,7 +76,7 @@ local function on_tick_evoGui(e)
             -- On récupère l'EvoGUI du joueur
             local rEvoGui = RitnEvoGui(event)
             local not_log = true
-            rEvoGui:setCaption(RitnForce(game.forces[player.force], not_log):evolutionCalculate())
+            rEvoGui:setCaption(RitnEnemyForce(game.forces[player.force], not_log):evolutionCalculate())
         end
     end
 end
@@ -124,7 +121,7 @@ local function on_tick_evolution(e)
             if enemy.active then 
                 local LuaSurface = game.surfaces[surface_name]
                 if LuaSurface ~= nil then
-                    local rSurface = RitnSurface(LuaSurface)
+                    local rSurface = RitnEnemySurface(LuaSurface)
 
                     -- calcul de la pollution de la surface
                     rSurface:calculate_pollution()
