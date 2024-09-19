@@ -149,7 +149,7 @@ function RitnEnemySurface:calculate_evolution()
             end
         end
     end
-  self:update()
+    self:update()
 
-  return self
+    return self
 end

@@ -25,10 +25,10 @@ local function on_init_mod(event)
     -- gestion evoGUI
     local status = pcall(function() remote.call("EvoGUI", "create_remote_sensor", 
         { 
-          mod_name = "RitnEnemy",
-          name = "evolution_factor_ritnenemy", 
-          text = "", 
-          caption = {'sensor.evo_factor_name'}
+            mod_name = "RitnEnemy",
+            name = "evolution_factor_ritnenemy", 
+            text = "", 
+            caption = {'sensor.evo_factor_name'}
         }
     ) end)
     if status then 
@@ -47,10 +47,10 @@ local function on_configuration_changed(event)
     -- gestion evoGUI
     pcall(function() remote.call("EvoGUI", "create_remote_sensor", 
         { 
-          mod_name = "RitnEnemy",
-          name = "evolution_factor_ritnenemy", 
-          text = "", 
-          caption = {'sensor.evo_factor_name'}
+            mod_name = "RitnEnemy",
+            name = "evolution_factor_ritnenemy", 
+            text = "", 
+            caption = {'sensor.evo_factor_name'}
         }
     ) end)
     -----------------------------------------------------------
@@ -65,7 +65,7 @@ local function on_tick_evoGui(e)
     if enemy == nil then return end
     if enemy.active == nil then return end
     if enemy.active == false then return end
-  
+
     if game.active_mods["EvoGUI"] then 
 
         local players = remote.call("RitnCoreGame", "get_players")
@@ -111,7 +111,7 @@ local function on_tick_evolution(e)
         end
     end
     --log('> surface_name = ' .. surface_name)
-  
+
     local map_settings = remote.call("RitnCoreGame", "get_map_settings")
     local enemy = remote.call("RitnCoreGame", "get_enemy")
 

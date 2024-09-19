@@ -47,7 +47,7 @@ function RitnEnemyForce:updateCeaseFires()
     end
 
     return self
-  
+
 end
 
 

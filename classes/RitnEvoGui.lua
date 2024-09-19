@@ -30,7 +30,7 @@ function RitnEvoGui:getEvoEnemy()
     if self.gui[1] == nil then log('not gui !') return end
     ----------------------------------------------------------
     --log('> '..self.object_name..':getEvoEnemy() -> ' .. self.name)
-      
+    
     if self.gui[1][self.main_gui] == nil then log('not EVOGUI !') return end
     if self.gui[1][self.main_gui]["sensor_flow"] == nil then log('not sensor_flow !') return end
     if self.gui[1][self.main_gui]["sensor_flow"]["always_visible"] == nil then log('not always_visible !') return end
