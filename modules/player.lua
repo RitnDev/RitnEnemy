@@ -6,7 +6,7 @@
 -- Remplace les entitées "spawner" de la force "enemy" par la force "enemy~[player_name]"
 local function on_chunk_generated(e)
     local rEvent = RitnCoreEvent(e)
-    local rSurface = RitnEnemySurface(rEvent.surface):changeForceEnemy(rEvent.area)
+    RitnEnemySurface(rEvent.surface):changeForceEnemy(rEvent.area)
 end
 
 --Creation de la force enemy de la map joueur
@@ -15,7 +15,7 @@ local function on_player_changed_surface(e)
     local rEvent = RitnCoreEvent(e)
     local rPlayer = RitnCoreEvent(e):getPlayer()
     -- Récupération de la surface où le joueur viens d'arriver
-    local rSurface = RitnEnemySurface(rPlayer.surface):createForceEnemy()
+    RitnEnemySurface(rPlayer.surface):createForceEnemy()
     RitnEnemyForce(rPlayer.force):updateCeaseFires()
     ----------------------------------------------------------------
     log('on_player_changed_surface')
@@ -25,7 +25,7 @@ end
 local function update_cease_fire(e)
     ----------------------------------------------------------------
     local rEvent = RitnCoreEvent(e)
-    local rForce = RitnEnemyForce(rEvent.player.force):updateCeaseFires()
+    RitnEnemyForce(rEvent.player.force):updateCeaseFires()
     ----------------------------------------------------------------
     log(rEvent.name)
 end
@@ -34,8 +34,8 @@ end
 local function on_player_changed_force(e)
     ----------------------------------------------------------------
     local rEvent = RitnCoreEvent(e)
-    local rForce = RitnEnemyForce(rEvent.player.force):updateCeaseFires()
-    local rOldForce = RitnEnemyForce(rEvent.force):updateCeaseFires()
+    RitnEnemyForce(rEvent.player.force):updateCeaseFires()
+    RitnEnemyForce(rEvent.force):updateCeaseFires()
     ----------------------------------------------------------------
     log('on_player_changed_force')
 end
