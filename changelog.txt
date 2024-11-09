@@ -1,4 +1,13 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.2.0
+Date: 12.10.2024
+  Changes:
+    - Passage en 2.0.
+    - Variable "global" -> "storage".
+  Fixes:
+    - Utilisation des fonctions LuaForce.get_evolution_factor() en passant le nom de la surface.
+    - Utilisation des fonctions LuaSurface.get_total_pollution() pour le calcul de la pollution.
+---------------------------------------------------------------------------------------------------
 Version: 1.1.2
 Date: 06.10.2024
   Adds:

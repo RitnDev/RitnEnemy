@@ -66,7 +66,7 @@ local function on_tick_evoGui(e)
     if enemy.active == nil then return end
     if enemy.active == false then return end
 
-    if game.active_mods["EvoGUI"] then 
+    if script.active_mods["EvoGUI"] then 
 
         local players = remote.call("RitnCoreGame", "get_players")
 
@@ -76,7 +76,7 @@ local function on_tick_evoGui(e)
             -- On récupère l'EvoGUI du joueur
             local rEvoGui = RitnEvoGui(event)
             local not_log = true
-            rEvoGui:setCaption(RitnEnemyForce(game.forces[player.force], not_log):evolutionCalculate())
+            rEvoGui:setCaption(RitnEnemyForce(game.forces[player.force], not_log):evolutionCalculate(player.surface))
         end
     end
 end
@@ -150,8 +150,8 @@ end
 local module = {events = {}}
 ---------------------------------------------------------------------------------------------
 -- Events
-script.on_init(on_init_mod)
-script.on_configuration_changed(on_configuration_changed)
+module.on_init = on_init_mod
+module.on_configuration_changed = on_configuration_changed
 module.events[defines.events.on_tick] = on_tick
 ---------------------------------------------------------------------------------------------
 return module

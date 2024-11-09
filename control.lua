@@ -1,4 +1,4 @@
--- Initialisation des variables globals
+-- Initialisation des variables storage
 require("core.defines")
 require(ritnlib.defines.enemy.setup)
 -- Activation de gvv s'il est présent

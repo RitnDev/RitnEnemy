@@ -27,7 +27,7 @@ defines.setup = dir .. ".core.setup-classes"
 -- Modules
 defines.modules = {
     core = dir .. ".core.modules",
-    globals = dir .. ".modules.globals",
+    storage = dir .. ".modules.storage",
     events = dir .. ".modules.events",
     commands = dir .. ".modules.commands",
     ----

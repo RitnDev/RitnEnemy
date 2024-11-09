@@ -74,7 +74,7 @@ end
 
 
 -- renvoie l'evolution au format texte à afficher dans EvoGUI
-function RitnEnemyForce:evolutionCalculate()
+function RitnEnemyForce:evolutionCalculate(surface_name)
     -- recupère la force enemy par defaut
     local LuaForceEnemy = game.forces[self.FORCE_ENEMY_NAME]
     -- si la force du joueur n'est pas player
@@ -85,7 +85,7 @@ function RitnEnemyForce:evolutionCalculate()
         end
     end
     -- prepare le texte de sortie en fonction de l'evolution de la force enemy
-    local percent_evo_factor = LuaForceEnemy.evolution_factor * 100
+    local percent_evo_factor = LuaForceEnemy.get_evolution_factor(surface_name) * 100
     local whole_number = math.floor(percent_evo_factor)
     local fractional_component = math.floor((percent_evo_factor - whole_number) * 100)
     if not self.not_log then 

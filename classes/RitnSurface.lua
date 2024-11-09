@@ -63,9 +63,9 @@ end
 function RitnEnemySurface:get_evo_factor(format)
     local percent_evo_factor = 0
     if game.forces[self.compute_enemy_name] ~= nil then
-        percent_evo_factor = game.forces[self.compute_enemy_name].evolution_factor * 100
+        percent_evo_factor = game.forces[self.compute_enemy_name].get_evolution_factor(self.name) * 100
     else
-        percent_evo_factor = game.forces.enemy.evolution_factor * 100  
+        percent_evo_factor = game.forces.enemy.get_evolution_factor(self.name) * 100  
     end
     local whole_number = math.floor(percent_evo_factor)
     local fractional_component = math.floor((percent_evo_factor - whole_number) * 10)
@@ -78,15 +78,7 @@ end
 function RitnEnemySurface:calculate_pollution()
     if self.data[self.name] then 
         if self.data[self.name].pollution then                     
-            local count = self.data[self.name].pollution.count
-            local pollution_total = self.surface.get_total_pollution()
-            self.data[self.name].pollution.last = self.data[self.name].pollution.current
-            self.data[self.name].pollution.current = pollution_total
-            local ecart = self.data[self.name].pollution.current - self.data[self.name].pollution.last
-            if ecart > 0 then 
-                self.data[self.name].pollution.count = count + ecart
-            end
-            --log('pollution_by_surface -> ' .. self.name)
+            self.data[self.name].pollution.count = self.surface.get_total_pollution()
         end
     end
 
@@ -135,17 +127,17 @@ function RitnEnemySurface:calculate_evolution()
             if game.forces[enemy_name] then 
                 -- calcul de l'evolution (by time & pollution)
                 if self.data[self.name].map_used then 
-                    game.forces[enemy_name].evolution_factor_by_time = time * time_factor
+                    game.forces[enemy_name].set_evolution_factor_by_time(time * time_factor, self.name)
                 end
-                game.forces[enemy_name].evolution_factor_by_pollution = count * pollution_factor
+                game.forces[enemy_name].set_evolution_factor_by_pollution(count * pollution_factor, self.name)
 
-                local evo_kill = game.forces[enemy_name].evolution_factor_by_killing_spawners
-                local evo_pol = game.forces[enemy_name].evolution_factor_by_pollution
-                local evo_time = game.forces[enemy_name].evolution_factor_by_time
+                local evo_kill = game.forces[enemy_name].get_evolution_factor_by_killing_spawners(self.name)
+                local evo_pol = game.forces[enemy_name].get_evolution_factor_by_pollution(self.name)
+                local evo_time = game.forces[enemy_name].get_evolution_factor_by_time(self.name)
                 -- calcul de l'evolution total
                 local evo = 1 - ((1-evo_kill) * (1-evo_pol) * (1-evo_time))
                 -- renvoi du calcul sur la force enemy
-                game.forces[enemy_name].evolution_factor = evo
+                game.forces[enemy_name].set_evolution_factor(evo, self.name)
             end
         end
     end
