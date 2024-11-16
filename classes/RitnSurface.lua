@@ -63,9 +63,9 @@ end
 function RitnEnemySurface:get_evo_factor(format)
     local percent_evo_factor = 0
     if game.forces[self.compute_enemy_name] ~= nil then
-        percent_evo_factor = game.forces[self.compute_enemy_name].get_evolution_factor(self.name) * 100
+        percent_evo_factor = game.forces[self.compute_enemy_name].get_evolution_factor() * 100
     else
-        percent_evo_factor = game.forces.enemy.get_evolution_factor(self.name) * 100  
+        percent_evo_factor = game.forces.enemy.get_evolution_factor() * 100  
     end
     local whole_number = math.floor(percent_evo_factor)
     local fractional_component = math.floor((percent_evo_factor - whole_number) * 10)
