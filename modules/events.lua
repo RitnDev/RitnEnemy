@@ -1,12 +1,14 @@
 ---------------------------------------------------------------------------------------------
 -- EVENTS
 ---------------------------------------------------------------------------------------------
-
+local table = require(ritnlib.defines.table)
+---------------------------------------------------------------------------------------------
 
 local function on_init_mod(event)
     log('RitnEnemy -> on_init')
     -----------------------------------------------------------
     local enemy = remote.call('RitnCoreGame', "get_enemy")
+    enemy.active = true
     enemy.force_disable = false
     remote.call('RitnCoreGame', "set_enemy", enemy)
     -----------------------------------------------------------
@@ -53,6 +55,23 @@ local function on_configuration_changed(event)
             caption = {'sensor.evo_factor_name'}
         }
     ) end)
+    -----------------------------------------------------------
+    local map_gen_settings = remote.call('RitnCoreGame', 'get_map_gen_settings')
+    local enemy = remote.call('RitnCoreGame', "get_enemy")
+        enemy.force_disable = false
+        -- si la création de base est à 0, cela veut dire que les ennemies sont désactivés
+        if table.isNotEmpty(map_gen_settings) then
+            if map_gen_settings["autoplace_controls"] then 
+                if map_gen_settings["autoplace_controls"]["enemy-base"] then 
+                    if map_gen_settings["autoplace_controls"]["enemy-base"].size == 0 then 
+                        enemy.active = false
+                    else
+                        enemy.active = true
+                    end
+                end
+            end
+        end
+    remote.call('RitnCoreGame', "set_enemy", enemy)
     -----------------------------------------------------------
 end
 

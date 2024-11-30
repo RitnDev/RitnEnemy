@@ -26,7 +26,10 @@ end)
 function RitnEnemySurface:createForceEnemy()
     if self.name == self.SURFACE_NAUVIS_NAME then return self end
     if string.sub(self.name, 1, 6) == self.prefix.lobby then return self end
-    if self.enemy.active == false then return self end
+    if self.enemy.active == false then 
+        log("> core.enemy.active = false -> RitnEnemySurface:createForceEnemy() => ## CANCEL ##") 
+        return self 
+    end
     log('> '..self.object_name..':createForceEnemy() -> '..self.name)
 
     -- la force enemy est à créer car elle n'existe pas

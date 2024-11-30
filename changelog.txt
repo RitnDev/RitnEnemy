@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.2.2
+Date: 30.11.2024
+  Fixes:
+    - Fixes: core.enemy.active = true si le mod est activé, 
+      cela réactive la création des forces enemy par surfaces.
+    - Correction de events.on_configuration_changed().
+---------------------------------------------------------------------------------------------------
 Version: 1.2.1
 Date: 16.10.2024
   Fixes:
