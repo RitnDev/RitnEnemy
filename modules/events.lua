@@ -134,23 +134,24 @@ local function on_tick_evolution(e)
     local map_settings = remote.call("RitnCoreGame", "get_map_settings")
     local enemy = remote.call("RitnCoreGame", "get_enemy")
 
+    -- 💡 Désactiver l'évolution vanilla
+    game.map_settings.enemy_evolution.enabled = false
+
     -- calcul de la pollution pour une surface
     if map_settings.enemy_evolution then 
-        if map_settings.enemy_evolution.enabled then 
-            if enemy.active then 
-                local LuaSurface = game.surfaces[surface_name]
-                if LuaSurface ~= nil then
-                    local rSurface = RitnEnemySurface(LuaSurface)
+        if enemy.active then 
+            local LuaSurface = game.surfaces[surface_name]
+            if LuaSurface ~= nil then
+                local rSurface = RitnEnemySurface(LuaSurface)
 
-                    -- calcul de la pollution de la surface
-                    rSurface:calculate_pollution()
+                -- calcul de la pollution de la surface
+                rSurface:calculate_pollution()
 
-                    -- calcul du temps passé sur la surface
-                    rSurface:calculate_time()
+                -- calcul du temps passé sur la surface
+                rSurface:calculate_time()
 
-                    -- calcul de l'evolution des enemy de cette surface
-                    rSurface:calculate_evolution()
-                end
+                -- calcul de l'evolution des enemy de cette surface
+                rSurface:calculate_evolution()
             end
         end
     end
