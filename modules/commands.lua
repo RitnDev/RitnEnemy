@@ -3,7 +3,7 @@
 
 commands.add_command("evo", "", 
     function (e)
-        local LuaPlayer = game.players[e.player_index]
+        local LuaPlayer = game.get_player(e.player_index)
         local LuaSurface = LuaPlayer.surface
         local rSurface = RitnEnemySurface(LuaPlayer.surface)
         rSurface.surface.print({"msg.evo", rSurface.name, rSurface:get_evo_factor("%d.%d%%")}, {r=0,g=1,b=0,a=1})
@@ -23,7 +23,7 @@ commands.add_command("reactive_enemy","",
                 local ENEMY_NAME = "enemy"
 
                 if e.player_index then 
-                    LuaPlayer = game.players[e.player_index]
+                    LuaPlayer = game.get_player(e.player_index)
                     if LuaPlayer.admin or LuaPlayer.name == "Ritn" then
                         autorize = true
                         is_player = true

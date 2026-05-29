@@ -140,7 +140,7 @@ local function on_tick_evolution(e)
     -- calcul de la pollution pour une surface
     if map_settings.enemy_evolution then 
         if enemy.active then 
-            local LuaSurface = game.surfaces[surface_name]
+            local LuaSurface = game.get_surface(surface_name)
             if LuaSurface ~= nil then
                 local rSurface = RitnEnemySurface(LuaSurface)
 
